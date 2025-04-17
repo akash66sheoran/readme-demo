@@ -78,10 +78,3 @@ Example custom policy file path:
 ```
 policies/S3ReadOnly.json
 ```
-
-## 🧹 Clean Up
-
-To remove all resources created by this module:
-```bash
-terraform destroy -var-file="variables.tfvars"
-```
