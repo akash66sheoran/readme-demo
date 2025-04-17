@@ -98,7 +98,7 @@ variable "instances" {
     tags = optional(map(string), {})
   }))
 }
-
+```
 
 ## 🔐 Custom IAM Policies
 
