@@ -60,15 +60,15 @@ This repository contains Terraform code to provision EC2 instances in AWS. It de
 | Variable               | Type    | Description                                                       |
 |------------------------|---------|-------------------------------------------------------------------|
 | `environment`          | string  | Name of the environment (e.g., `dev`, `staging`, `prod`)          |
-| `maintainedBy`         | string  | Who maintains these resources (e.g., team name or email)          |
-| `application`          | string  | Name or purpose of the application/server                         |
+| `maintainedBy`         | string  | Who maintains these resources (team name)          |
+| `application`          | string  | Name or purpose of the server                         |
 | `vpc_id`               | string  | ID of the VPC where resources will be launched                    |
 | `sg_name`              | string  | Name of the security group                                        |
 | `sg_inbound_rules`     | map     | Map of inbound security group rules (protocol, ports, CIDRs)      |
 | `instances`            | map     | Map of instance configurations including AMI, type, subnet, etc.  |
 | `iam_instance_profile` | string  | Name of the IAM instance profile to associate with EC2 instances  |
 | `ec2_role_name`        | string  | IAM role name that EC2 will assume                                |
-| `managed_policy_arns`  | list    | List of ARNs of AWS-managed IAM policies to attach                |
+| `managed_policy_arns`  | list    | List of ARNs of managed IAM policies to attach                |
 
 ## 🔐 Custom IAM Policies
 
