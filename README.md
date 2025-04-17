@@ -1,4 +1,4 @@
-# Terraform AWS EC2 Provisioning Demo
+# tf-aws-linux-ec2
 
 This repository contains Terraform code to provision EC2 instances in AWS. It demonstrates key infrastructure components such as IAM roles and policies, security groups, instance profiles.
 
