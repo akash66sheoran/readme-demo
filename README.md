@@ -70,6 +70,36 @@ This repository contains Terraform code to provision EC2 instances in AWS. It de
 | `ec2_role_name`        | string  | IAM role name that EC2 will assume                                |
 | `managed_policy_arns`  | list    | List of ARNs of managed IAM policies to attach                |
 
+# Terraform EC2 “instances” Variable Documentation
+
+This document explains how to use the `instances` input variable in your Terraform configuration.  This variable is a map of named EC2‐instance definitions; each entry in the map will produce one AWS EC2 instance with its own AMI, sizing, storage, networking, and tags.
+
+---
+
+## 📥 Variable: `instances`
+
+```hcl
+variable "instances" {
+  type = map(object({
+    ami                    = string
+    instance_type          = string
+    key_name               = string
+    subnet_id              = string
+    vpc_security_group_ids = optional(list(string), [])
+    root_block_device = object({
+      volume_size = number
+      volume_type = string
+    })
+    ebs_block_device = optional(list(object({
+      device_name = string
+      volume_size = number
+      volume_type = string
+    })), [])
+    tags = optional(map(string), {})
+  }))
+}
+
+
 ## 🔐 Custom IAM Policies
 
 You can add additional fine-grained IAM policies in the `policies/` directory as JSON files. These will be automatically picked up by Terraform and attached to the IAM role assigned to EC2 instances.
