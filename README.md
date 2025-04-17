@@ -10,7 +10,7 @@ This repository contains Terraform code to provision EC2 instances in AWS. It de
 - Set up security groups with dynamic ingress and egress rules or attach already existing ones.
 - Inject user data with templated scripts
 
-## 📁 Project Structure
+## 📁 Folder Structure
 
 ```
 .
