@@ -25,15 +25,6 @@ This repository contains Terraform code to provision EC2 instances in AWS. It de
 └── user_data/              # User data templates for EC2 instances
 ```
 
-## ✅ Prerequisites
-
-Make sure the following tools are installed and configured:
-
-- [Terraform v1.0+](https://www.terraform.io/downloads.html)
-- AWS CLI configured with IAM credentials
-- AWS account with necessary permissions to create resources (EC2, IAM, VPC, etc.)
-- (Optional) An S3 bucket and DynamoDB table for remote state locking
-
 ## 🚦 Usage
 
 1. **Initialize Terraform**
