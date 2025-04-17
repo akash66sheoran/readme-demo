@@ -1,138 +1,96 @@
-This repository provides a sample Terraform configuration to demonstrate provisioning AWS resources, including EC2 instances, security groups, IAM roles, and related configurations. You can use this setup as a template for deploying simple EC2-based applications on AWS.
+# Terraform AWS EC2 Demo (readme-demo)
 
-Table of Contents
+A demonstration Terraform project for provisioning AWS EC2 instances with a custom IAM role, instance profile, security groups, and tagging. Supports multiple instances, remote state, and user data templating.
 
-Prerequisites
+## Table of Contents
 
-Getting Started
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Terraform Files](#terraform-files)
+- [Variables](#variables)
+- [Customizing IAM Policies](#customizing-iam-policies)
+- [User Data Scripts](#user-data-scripts)
+- [Clean Up](#clean-up)
 
-Configuration
+## Project Structure
+```
+.
+├── backend.tf              # (Optional) Remote backend configuration (S3/DynamoDB)
+├── terraform.tf            # Required providers configuration
+├── variables.tf            # Input variable definitions
+├── variables.tfvars        # Example variable values
+├── tags.tf                 # Default tagging local values
+├── iam.tf                  # IAM role, policies, and instance profile
+├── security-groups.tf      # Security group and ingress/egress rules
+├── main.tf                 # EC2 instance resource definitions
+└── policies/               # (Optional) Custom IAM policy JSON files
+└── user_data/              # (Optional) User data template files
+```
 
-Backend Configuration
+## Prerequisites
 
-Variables
+- [Terraform v1.0+](https://www.terraform.io/downloads)
+- AWS account with appropriate IAM permissions
+- AWS CLI configured with credentials or environment variables
+- (Optional) S3 bucket and DynamoDB table for remote state locking
 
-Example Variables File
+## Configuration
 
-Usage
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/akash66sheoran/readme-demo.git
+   cd readme-demo
+   ```
+2. (Optional) Configure remote state by uncommenting and updating `backend.tf`.
+3. Update `variables.tfvars` with your environment-specific values.
 
-File Structure
+## Usage
 
-License
-
-Author
-
-Prerequisites
-
-Terraform v1.5 or higher
-
-AWS CLI configured with credentials and permissions to create IAM, EC2, and networking resources
-
-Getting Started
-
-Clone the repository:
-
-git clone https://github.com/akash66sheoran/readme-demo.git
-cd readme-demo
-
-(Optional) Configure remote state by uncommenting and updating the backend.tf file.
-
-Customize variables.tfvars to suit your environment.
-
-Configuration
-
-Backend Configuration
-
-By default, state is managed locally. To enable an S3 backend with DynamoDB state locking, update and uncomment the settings in backend.tf:
-
-# terraform {
-#   backend "s3" {
-#     bucket         = "your-terraform-state-bucket"
-#     key            = "path/to/terraform.tfstate"
-#     region         = "us-east-1"
-#     dynamodb_table = "your-lock-table"
-#     encrypt        = true
-#   }
-# }
-
-Variables
-
-Key variables are defined in variables.tf:
-
-environment (string): Deployment environment (e.g., dev, prod)
-
-maintainedBy (string): Team or person responsible for maintenance
-
-application (string): Purpose of the EC2 server
-
-sg_inbound_rules (map): Security group ingress rules (source CIDR, ports, protocol)
-
-sg_name (string): Name for the security group
-
-vpc_id (string): VPC ID where resources will be deployed
-
-instances (map): EC2 instance definitions (AMI ID, instance type, key pair, subnet, block devices, tags)
-
-iam_instance_profile (string): Name for the IAM instance profile
-
-ec2_role_name (string): IAM role name for EC2 instances
-
-managed_policy_arns (list): AWS-managed policy ARNs to attach to the EC2 role
-
-Example Variables File
-
-See variables.tfvars for an example:
-
-vpc_id               = "vpc-0e2e6b5c94514a787"
-environment          = "dev"
-maintainedBy         = "Mavericks"
-application          = "Metrics server"
-sg_name              = "metrics-server-sg"
-iam_instance_profile = "metrics-server-profile"
-ec2_role_name        = "metrics-server-role"
-
-sg_inbound_rules = {
-  allow_ssh = {
-    source      = "0.0.0.0/0"
-    from_port   = 22
-    to_port     = 22
-    ip_protocol = "tcp"
-  }
-  allow_http = {
-    source      = "0.0.0.0/0"
-    from_port   = 80
-    to_port     = 80
-    ip_protocol = "tcp"
-  }
-}
-
-instances = {
-  server1 = {
-    ami                  = "ami-00a929b66ed6e0de6"
-    instance_type        = "t2.micro"
-    key_name             = "linux-key"
-    subnet_id            = "subnet-0e63f62a834b0b60b"
-    root_block_device    = { volume_size = 10, volume_type = "gp3" }
-    tags                 = { project = "TOD" }
-  }
-}
-
-managed_policy_arns = [
-  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-]
-
-Usage
-
-Initialize Terraform and configure providers:
-
+```bash
 terraform init
+terraform plan -var-file="variables.tfvars"
+terraform apply -var-file="variables.tfvars"
+```
 
-Preview changes:
+## Terraform Files
 
-terraform plan -var-file=variables.tfvars
+- **terraform.tf**: Specifies required Terraform providers.
+- **backend.tf**: (Commented out) S3/DynamoDB backend for remote state.
+- **variables.tf**: Declares input variables.
+- **variables.tfvars**: Provides example values for variables.
+- **tags.tf**: Defines default tags applied to all resources.
+- **iam.tf**: Creates an IAM role, attaches managed/custom policies, and an instance profile.
+- **security-groups.tf**: Provisions a security group with ingress and egress rules.
+- **main.tf**: Launches EC2 instances and attaches the instance profile.
 
-Apply configuration:
+## Variables
 
-terraform apply -var-file=variables.tfvars
+| Variable               | Type   | Description                                     |
+|------------------------|--------|-------------------------------------------------|
+| `environment`          | string | Deployment environment (e.g., `dev`, `prod`).    |
+| `maintainedBy`         | string | Team or individual responsible for resources.   |
+| `application`          | string | Purpose or usage of the servers.               |
+| `vpc_id`               | string | VPC ID where instances will be launched.        |
+| `sg_name`              | string | Security group name.                            |
+| `sg_inbound_rules`     | map    | Map of ingress rules (source, ports, protocol).  |
+| `instances`            | map    | Map of EC2 instance configurations.             |
+| `iam_instance_profile` | string | Name of the IAM instance profile.               |
+| `ec2_role_name`        | string | IAM role name for EC2 instances.                |
+| `managed_policy_arns`  | list   | List of AWS managed policy ARNs to attach.      |
 
-File Structure
+## Customizing IAM Policies
+
+Place additional JSON policy files under the `policies/` directory. Terraform will automatically create IAM role policies from all `.json` files in this folder.
+
+## User Data Scripts
+
+User data templates are stored in the `user_data/` directory. The EC2 instances render `user_data.sh.tftpl` via the `templatefile` function, passing in the `hostname` variable.
+
+## Clean Up
+
+```bash
+terraform destroy -var-file="variables.tfvars"
+```
+
