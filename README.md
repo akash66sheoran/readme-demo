@@ -4,6 +4,7 @@ This repository contains Terraform code to provision EC2 instances in AWS. It de
 
 ## 🚀 Features
 
+- Modular and reusable infrastructure components
 - Launch single or multiple EC2 instances with different configurations
 - Create and attach custom and managed IAM policies
 - Set up security groups with dynamic ingress and egress rules or attach already existing ones.
