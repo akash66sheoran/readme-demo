@@ -42,17 +42,17 @@ This repository contains Terraform code to provision EC2 instances in AWS. It de
    
 4. **Review the execution plan**
    ```bash
-   terraform plan -var-file=variables.tfvars
+   terraform plan --var-file=variables.tfvars
    ```
 
 5. **Apply the configuration**
    ```bash
-   terraform apply -var-file=variables.tfvars
+   terraform apply --var-file=variables.tfvars
    ```
 
 6. **Destroy the infrastructure (when needed)**
    ```bash
-   terraform destroy -var-file=variables.tfvars
+   terraform destroy --var-file=variables.tfvars
    ```
 
 ## 📜 Variables Explained
