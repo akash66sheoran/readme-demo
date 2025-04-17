@@ -38,7 +38,7 @@ This repository contains Terraform code to provision EC2 instances in AWS. It de
    terraform workspace new <workspace-name>
    ```
 
-3. **Edit the variables.tfvars file**
+3. **Edit the _variables.tfvars_ file**
    
 4. **Review the execution plan**
    ```bash
