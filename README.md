@@ -1,6 +1,6 @@
 # Terraform AWS EC2 Provisioning Demo
 
-This repository provides a comprehensive example of how to use Terraform to provision EC2 instances in AWS. It demonstrates key infrastructure components such as IAM roles and policies, security groups, instance profiles, user data scripting, and remote state management. The setup supports scalable deployment using input maps, tagging, and reusable templates.
+This repository contains Terraform code to provision EC2 instances in AWS. It demonstrates key infrastructure components such as IAM roles and policies, security groups, instance profiles.
 
 ## 🚀 Features
 
@@ -15,11 +15,11 @@ This repository provides a comprehensive example of how to use Terraform to prov
 
 ```
 .
-├── backend.tf              # (Optional) Remote state backend using S3 and DynamoDB
+├── backend.tf              # Remote state backend using S3
 ├── terraform.tf            # Required provider configuration
 ├── variables.tf            # Input variable declarations
 ├── variables.tfvars        # Example values for variables
-├── tags.tf                 # Centralized default tags for all resources
+├── tags.tf                 # default tags
 ├── iam.tf                  # IAM role, instance profile, and policies
 ├── security-groups.tf      # Security group with ingress/egress rules
 ├── main.tf                 # EC2 instances creation logic
@@ -35,20 +35,6 @@ Make sure the following tools are installed and configured:
 - AWS CLI configured with IAM credentials
 - AWS account with necessary permissions to create resources (EC2, IAM, VPC, etc.)
 - (Optional) An S3 bucket and DynamoDB table for remote state locking
-
-## ⚙️ Configuration Steps
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/akash66sheoran/readme-demo.git
-   cd readme-demo
-   ```
-
-2. **Edit variable values**
-   Update the `variables.tfvars` file with your environment-specific values including VPC ID, instance details, etc.
-
-3. **(Optional) Configure remote state**
-   Uncomment and configure `backend.tf` to enable remote state storage with S3 and DynamoDB.
 
 ## 🚦 Usage
 
@@ -96,33 +82,9 @@ Example custom policy file path:
 policies/S3ReadOnly.json
 ```
 
-## 📝 User Data Templates
-
-Templates stored under `user_data/` allow for flexible bootstrapping. These are rendered using the `templatefile()` function in Terraform.
-
-Example template: `user_data.sh.tftpl`
-
-Variables passed into the template include:
-- `hostname`: used to uniquely configure each instance
-
-You can include startup tasks like package installation, logging setup, or pulling configs from a central repo.
-
 ## 🧹 Clean Up
 
 To remove all resources created by this module:
 ```bash
 terraform destroy -var-file="variables.tfvars"
 ```
-
-## 🙌 Contributing
-
-Feel free to fork this repository and submit pull requests for improvements, bug fixes, or additional features.
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
-
-Created by [akash66sheoran](https://github.com/akash66sheoran) • Happy Terraforming! ✨
-
