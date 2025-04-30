@@ -26,14 +26,14 @@ stages:
               - task: replacetokens@6
                 displayName: 'Replace tokens in **/*.properties'
                 inputs:
-                  root: '$(System.DefaultWorkingDirectory)/kar-par.par-metrics/drop/metrics.jar'
+                  root: '$(System.DefaultWorkingDirectory)/par-metrics-build/drop/metrics.jar'
                   sources: '**/*.properties'
               
               - task: CopyFilesOverSSH@0
                 displayName: 'Securely copy files to the remote machine'
                 inputs:
                   sshEndpoint: 'par-integration-metrics-dev-new'
-                  sourceFolder: '$(System.DefaultWorkingDirectory)/$(Build.DefinitionName)/drop'
+                  sourceFolder: '$(System.DefaultWorkingDirectory)/par-metrics-build/drop'
                   contents: 'metrics.jar'
               
               - task: SSH@0
