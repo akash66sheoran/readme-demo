@@ -1,0 +1,71 @@
+trigger: none
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+resources:
+  pipelines:
+    - pipeline: par-metrics-build
+      source: kar-par.par-metrics
+
+stages:
+  - stage: Dev
+    jobs:
+      - deployment: metrics-dev
+        variables:
+          variables:
+          Environment: 'dev'
+          StackName: 'par-metrics-$(Environment)'
+          AlarmActionArn: 'arn:aws:sns:us-east-1:427840441039:par-it-testing'
+        environment: ""
+        strategy:
+          runOnce:
+            deploy:
+              steps:              
+              - task: replacetokens@6
+                displayName: 'Replace tokens in **/*.properties'
+                inputs:
+                  root: '$(System.DefaultWorkingDirectory)/kar-par.par-metrics/drop/metrics.jar'
+                  sources: '**/*.properties'
+              
+              - task: CopyFilesOverSSH@0
+                displayName: 'Securely copy files to the remote machine'
+                inputs:
+                  sshEndpoint: 'par-integration-metrics-dev-new'
+                  sourceFolder: '$(System.DefaultWorkingDirectory)/$(Build.DefinitionName)/drop'
+                  contents: 'metrics.jar'
+              
+              - task: SSH@0
+                displayName: 'Run shell commands on remote machine'
+                inputs:
+                  sshEndpoint: 'par-integration-metrics-dev-new'
+                  commands: |
+                    sudo systemctl restart par-metrics-dev
+                    sudo ps -ef | grep java
+                
+              - task: AmazonWebServices.aws-vsts-tools.CloudFormationCreateOrUpdateStack.CloudFormationCreateOrUpdateStack@1
+                displayName: 'Deploy Alert and Logging Stack'
+                inputs:
+                  awsCredentials: 'kar-par-np'
+                  regionName: 'us-east-1'
+                  stackName: '$(StackName)'
+                  templateFile: '$(System.DefaultWorkingDirectory)/kar-par.par-metrics/cloudformation/cloudformation.yml'
+                  templateParametersSource: inline
+                  templateParameters: |
+                    [
+                      {
+                        "ParameterKey":"Environment",
+                        "ParameterValue":"$(Environment)"
+                        },
+                      {
+                        "ParameterKey":"AlarmActionArn",
+                        "ParameterValue":"$(AlarmActionArn)"
+                        }
+                    ]
+                  warnWhenNoWorkNeeded: false
+              
+              - task: CloudFormationCreateOrUpdateStack@1
+                inputs:
+                  stackName: 
+                  templateSource: 'file'
