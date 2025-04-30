@@ -45,6 +45,7 @@ stages:
                     sudo ps -ef | grep java
               
               - task: CloudFormationCreateOrUpdateStack@1
+                displayName: 'Deploy Alert and Logging Stack'
                 inputs:
                   awsCredentials: 'kar-par-np'
                   regionName: 'us-east-1'
