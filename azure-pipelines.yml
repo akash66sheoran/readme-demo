@@ -18,7 +18,7 @@ stages:
           Environment: 'dev'
           StackName: 'par-metrics-$(Environment)'
           AlarmActionArn: 'arn:aws:sns:us-east-1:427840441039:par-it-testing'
-        environment: ""
+        environment: "Dev"
         strategy:
           runOnce:
             deploy:
@@ -43,15 +43,15 @@ stages:
                   commands: |
                     sudo systemctl restart par-metrics-dev
                     sudo ps -ef | grep java
-                
-              - task: AmazonWebServices.aws-vsts-tools.CloudFormationCreateOrUpdateStack.CloudFormationCreateOrUpdateStack@1
-                displayName: 'Deploy Alert and Logging Stack'
+              
+              - task: CloudFormationCreateOrUpdateStack@1
                 inputs:
                   awsCredentials: 'kar-par-np'
                   regionName: 'us-east-1'
                   stackName: '$(StackName)'
-                  templateFile: '$(System.DefaultWorkingDirectory)/kar-par.par-metrics/cloudformation/cloudformation.yml'
-                  templateParametersSource: inline
+                  templateSource: 'file'
+                  templateFile: '$(System.DefaultWorkingDirectory)/par-metrics-build/cloudformation/cloudformation.yml'
+                  templateParametersSource: 'inline'
                   templateParameters: |
                     [
                       {
@@ -64,8 +64,3 @@ stages:
                         }
                     ]
                   warnWhenNoWorkNeeded: false
-              
-              - task: CloudFormationCreateOrUpdateStack@1
-                inputs:
-                  stackName: 
-                  templateSource: 'file'
