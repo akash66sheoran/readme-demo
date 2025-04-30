@@ -26,14 +26,14 @@ stages:
               - task: replacetokens@6
                 displayName: 'Replace tokens in **/*.properties'
                 inputs:
-                  root: '$(System.DefaultWorkingDirectory)/par-metrics-build/drop/metrics.jar'
+                  root: '$(Pipeline.Workspace)/par-metrics-build/drop/metrics.jar'
                   sources: '**/*.properties'
               
               - task: CopyFilesOverSSH@0
                 displayName: 'Securely copy files to the remote machine'
                 inputs:
                   sshEndpoint: 'par-integration-metrics-dev-new'
-                  sourceFolder: '$(System.DefaultWorkingDirectory)/par-metrics-build/drop'
+                  sourceFolder: '$(Pipeline.Workspace)/par-metrics-build/drop'
                   contents: 'metrics.jar'
               
               - task: SSH@0
@@ -51,7 +51,7 @@ stages:
                   regionName: 'us-east-1'
                   stackName: '$(StackName)'
                   templateSource: 'file'
-                  templateFile: '$(System.DefaultWorkingDirectory)/par-metrics-build/cloudformation/cloudformation.yml'
+                  templateFile: '$(Pipeline.Workspace)/par-metrics-build/cloudformation/cloudformation.yml'
                   templateParametersSource: 'inline'
                   templateParameters: |
                     [
