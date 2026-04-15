@@ -11,8 +11,18 @@ stages:
     steps:
     - script: echo 'hello, world'
       displayName: 'Run script'
+
+- stage: Test
+  displayName: Deploy to test
+  jobs:
+  - job: DeployJob
+    steps:
+    - script: echo 'hello, world'
+      displayName: 'Run script'
+
 - stage: Production
   displayName: Deploy to production
+  trigger: manual
   jobs:
   - job: DeployJob
     steps:
