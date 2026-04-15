@@ -13,7 +13,6 @@ stages:
       displayName: 'Run script'
 - stage: Production
   displayName: Deploy to production
-  trigger: manual
   jobs:
   - job: DeployJob
     steps:
